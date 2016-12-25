@@ -1,4 +1,4 @@
-package com.yuyh.library;
+package com.yuyh.library.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -126,7 +126,7 @@ public class EasyGuideView extends RelativeLayout {
                 switch (area.mShape) {
                     case HShape.CIRCLE:
                         mCanvas.drawCircle(rectF.centerX(), rectF.centerY(),
-                                Math.min(area.mHightlightView.getWidth(), area.mHightlightView.getHeight()),
+                                Math.min(area.mHightlightView.getWidth(), area.mHightlightView.getHeight())/2,
                                 mPaint);
                         break;
                     case HShape.RECTANGLE:
@@ -138,7 +138,7 @@ public class EasyGuideView extends RelativeLayout {
                 }
             }
             canvas.drawBitmap(mBitmap, mBitmapRect.left, mBitmapRect.top, null);
-//绘制剩余空间的矩形
+            //绘制剩余空间的矩形
             mPaint.setXfermode(null);
             mPaint.setStyle(Paint.Style.STROKE);
             mPaint.setStrokeWidth(mStrokeWidth + 0.1f);

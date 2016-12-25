@@ -7,20 +7,14 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:textColor="@color/colorAccent"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
-        android:text="哈哈" />
-
-
-    <com.yuyh.library.EasyGuideView
-        android:id="@+id/guide"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent"/>
+        android:text="菜单"
+        android:textColor="@color/colorAccent" />
 
 
 </RelativeLayout>

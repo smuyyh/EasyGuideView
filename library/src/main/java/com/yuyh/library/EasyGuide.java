@@ -18,6 +18,7 @@ import com.yuyh.library.bean.TipsView;
 import com.yuyh.library.bean.Message;
 import com.yuyh.library.constant.Constants;
 import com.yuyh.library.support.HShape;
+import com.yuyh.library.view.EasyGuideView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,8 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 /**
+ * 新手引导
+ *
  * @author yuyh.
  * @date 2016/12/24.
  */
@@ -36,10 +39,10 @@ public class EasyGuide {
     private EasyGuideView mGuideView;
     private LinearLayout mTipView;
 
-    List<HighlightArea> mAreas = new ArrayList<>();
-    List<TipsView> mIndicators = new ArrayList<>();
-    List<Message> mMessages = new ArrayList<>();
-    Confirm mConfirm;
+    private List<HighlightArea> mAreas = new ArrayList<>();
+    private List<TipsView> mIndicators = new ArrayList<>();
+    private List<Message> mMessages = new ArrayList<>();
+    private Confirm mConfirm;
 
     public EasyGuide(Activity activity) {
         this(activity, null, null, null, null);
@@ -56,9 +59,9 @@ public class EasyGuide {
 
     }
 
-    private void addView(View view, int offsetX, int offsetY) {
-
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+    private void addView(View view, int offsetX, int offsetY, RelativeLayout.LayoutParams params) {
+        if (params == null)
+            params = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
 
         if (offsetX == Constants.CENTER) {
             params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
@@ -91,10 +94,8 @@ public class EasyGuide {
         mTipView.setOrientation(LinearLayout.VERTICAL);
 
         if (mIndicators != null) {
-            for (TipsView image : mIndicators) {
-                ImageView ivIndicator = new ImageView(mActivity);
-                ivIndicator.setImageResource(image.resId);
-                addView(ivIndicator, image.offsetX, image.offsetY);
+            for (TipsView tipsView : mIndicators) {
+                addView(tipsView.view, tipsView.offsetX, tipsView.offsetY, tipsView.params);
             }
         }
 
@@ -133,7 +134,7 @@ public class EasyGuide {
             mTipView.addView(tvConfirm);
         }
 
-        addView(mTipView, Constants.CENTER, Constants.CENTER);
+        addView(mTipView, Constants.CENTER, Constants.CENTER, null);
 
         mParentView.addView(mGuideView, new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
     }
@@ -179,6 +180,11 @@ public class EasyGuide {
 
         public Builder addView(View view, int offX, int offY) {
             indicators.add(new TipsView(view, offX, offY));
+            return this;
+        }
+
+        public Builder addView(View view, int offX, int offY, RelativeLayout.LayoutParams params) {
+            indicators.add(new TipsView(view, offX, offY, params));
             return this;
         }
 
