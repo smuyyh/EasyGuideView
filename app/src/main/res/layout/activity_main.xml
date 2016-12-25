@@ -4,16 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/common_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize" />
+
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/menu_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/common_toolbar"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
-        android:text="菜单"
+        android:onClick="show"
+        android:text="点击显示"
         android:textColor="@color/colorAccent" />
 
 

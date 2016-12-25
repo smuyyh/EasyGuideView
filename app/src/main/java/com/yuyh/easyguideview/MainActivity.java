@@ -1,16 +1,19 @@
 package com.yuyh.easyguideview;
 
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ActionMenuView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.yuyh.library.EasyGuide;
 import com.yuyh.library.support.HShape;
@@ -21,9 +24,12 @@ import com.yuyh.library.support.HShape;
  */
 public class MainActivity extends AppCompatActivity {
 
-    private Button button;
-
     EasyGuide easyGuide;
+
+    private Toolbar toolbar;
+
+    private MenuItem menuItem;
+    private TextView menuView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,30 +37,30 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        button = (Button) findViewById(R.id.button);
+        toolbar = (Toolbar) findViewById(R.id.common_toolbar);
 
-        button.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+        setSupportActionBar(toolbar);
 
-                View tipsView = createTipsView();
+    }
 
-                int[] loc = new int[2];
-                button.getLocationOnScreen(loc);
+    public void show(View view) {
+        int[] loc = new int[2];
+        view.getLocationOnScreen(loc);
 
+        View tipsView = createTipsView();
 
-                easyGuide = new EasyGuide.Builder(MainActivity.this)
-                        .addHightArea(button, HShape.RECTANGLE)
-                        //.addIndicator(R.drawable.left_bottom, 100, 100)
-                        //.addMessage("哈哈", 14)
-                        //.setPositiveButton("我知道了", Constants.INVILID_VALUE, 14)
-                        .addView(tipsView, 0, loc[1] + button.getHeight(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-                        .build();
+        if (easyGuide != null && easyGuide.isShowing())
+            easyGuide.dismiss();
 
-                easyGuide.show();
-            }
-        }, 500);
+        easyGuide = new EasyGuide.Builder(MainActivity.this)
+                .addHightArea(view, HShape.RECTANGLE)
+                //.addIndicator(R.drawable.left_bottom, 100, 100)
+                //.addMessage("哈哈", 14)
+                //.setPositiveButton("朕知道了", Constants.INVILID_VALUE, 14)
+                .addView(tipsView, 0, loc[1] + view.getHeight(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+                .build();
 
+        easyGuide.show();
     }
 
     private View createTipsView() {
@@ -78,5 +84,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        menuItem = menu.findItem(R.id.menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu:
+                menuView = (TextView) findViewById(R.id.menu);
+                show(menuView);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

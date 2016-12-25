@@ -146,6 +146,10 @@ public class EasyGuide {
         }
     }
 
+    public boolean isShowing() {
+        return mParentView.indexOfChild(mGuideView) > 0;
+    }
+
     public static class Builder {
 
         Activity activity;

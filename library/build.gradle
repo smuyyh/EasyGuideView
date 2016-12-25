@@ -6,6 +6,7 @@ version = "1.0.0"
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.0"
+    resourcePrefix "easyguideview"
 
     defaultConfig {
         minSdkVersion 8
@@ -28,7 +29,7 @@ dependencies {
 
 def siteUrl = 'https://github.com/smuyyh/EasyGuideView'
 def gitUrl = 'https://github.com/smuyyh/EasyGuideView.git'
-group = "com.yuyh.easyadapter"
+group = "com.yuyh.easyguideview"
 
 install {
     repositories.mavenInstaller {
