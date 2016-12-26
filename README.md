@@ -17,6 +17,8 @@ compile 'com.yuyh.easyguideview:library:1.2.1'
 ```java
 
 // 须在View绘制完成之后调用，否则可能无法准确显示
+// offsetX:正数代表从屏幕左侧往右便宜距离，负数表示从屏幕右侧往左偏移距离。Constant.CENTER 表示居中
+// offsetY:同理。正数由上到下，负数由下到上。Constant.CENTER 表示居中
 public void show(){
     EasyGuide easyGuide = new EasyGuide.Builder(MainActivity.this)
             // 增加View高亮区域，可同时显示多个
