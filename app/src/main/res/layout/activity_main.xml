@@ -21,8 +21,8 @@
         android:layout_below="@id/common_toolbar"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
-        android:onClick="show"
-        android:text="点击显示"
+        android:onClick="btnShow"
+        android:text="弹出引导提示"
         android:textColor="@color/colorAccent" />
 
 

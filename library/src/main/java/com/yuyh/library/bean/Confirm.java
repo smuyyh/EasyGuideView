@@ -10,22 +10,14 @@ public class Confirm {
 
     public String text;
 
-    public int offsetY = -1;
-
     public int textSize = -1;
 
     public Confirm(String text) {
         this.text = text;
     }
 
-    public Confirm(String text, int offsetY) {
+    public Confirm(String text, int textSize) {
         this.text = text;
-        this.offsetY = offsetY;
-    }
-
-    public Confirm(String text, int offsetY, int textSize) {
-        this.text = text;
-        this.offsetY = offsetY;
         this.textSize = textSize;
     }
 }

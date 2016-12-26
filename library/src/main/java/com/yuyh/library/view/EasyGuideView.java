@@ -155,7 +155,7 @@ public class EasyGuideView extends RelativeLayout {
         return fillRect;
     }
 
-    public void recyclerVitmap() {
+    public void recyclerBitmap() {
         if (mBitmap != null) {
             mBitmap.recycle();
             mBitmap = null;

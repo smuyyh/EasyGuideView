@@ -4,8 +4,8 @@
 
     <item
         android:id="@+id/menu"
-        android:actionViewClass="android.widget.TextView"
         android:title="菜单"
+        android:icon="@drawable/click"
         app:showAsAction="always" />
 
 </menu>

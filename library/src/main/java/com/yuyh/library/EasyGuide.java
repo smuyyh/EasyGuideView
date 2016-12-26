@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -14,17 +15,18 @@ import android.widget.TextView;
 
 import com.yuyh.library.bean.Confirm;
 import com.yuyh.library.bean.HighlightArea;
-import com.yuyh.library.bean.TipsView;
 import com.yuyh.library.bean.Message;
+import com.yuyh.library.bean.TipsView;
 import com.yuyh.library.constant.Constants;
 import com.yuyh.library.support.HShape;
+import com.yuyh.library.support.OnStateChangedListener;
 import com.yuyh.library.view.EasyGuideView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
  * 新手引导
@@ -43,54 +45,47 @@ public class EasyGuide {
     private List<TipsView> mIndicators = new ArrayList<>();
     private List<Message> mMessages = new ArrayList<>();
     private Confirm mConfirm;
+    private boolean dismissAnyWhere;
+
+    private OnStateChangedListener listener;
 
     public EasyGuide(Activity activity) {
-        this(activity, null, null, null, null);
+        this(activity, null, null, null, null, true);
     }
 
-    public EasyGuide(Activity activity, List<HighlightArea> areas, List<TipsView> indicators, List<Message> messages, Confirm confirm) {
+    public EasyGuide(Activity activity, List<HighlightArea> areas, List<TipsView> indicators,
+                     List<Message> messages, Confirm confirm, boolean dismissAnyWhere) {
         this.mActivity = activity;
         this.mAreas = areas;
         this.mIndicators = indicators;
         this.mMessages = messages;
         this.mConfirm = confirm;
+        this.dismissAnyWhere = dismissAnyWhere;
 
         mParentView = (FrameLayout) mActivity.getWindow().getDecorView();
 
     }
 
-    private void addView(View view, int offsetX, int offsetY, RelativeLayout.LayoutParams params) {
-        if (params == null)
-            params = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-
-        if (offsetX == Constants.CENTER) {
-            params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
-        } else if (offsetX < 0) {
-            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-            params.rightMargin = -offsetX;
-        } else {
-            params.leftMargin = offsetX;
-        }
-
-        if (offsetY == Constants.CENTER) {
-            params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
-        } else if (offsetY < 0) {
-            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-            params.bottomMargin = -offsetY;
-        } else {
-            params.topMargin = offsetY;
-        }
-
-        mGuideView.addView(view, params);
+    /**
+     * 设置引导提示 状态改变(显示/取消) 监听
+     *
+     * @param listener
+     */
+    public void setOnStateChangedListener(OnStateChangedListener listener) {
+        this.listener = listener;
     }
 
+    /**
+     * 显示引导提示
+     */
     public void show() {
 
         mGuideView = new EasyGuideView(mActivity);
         mGuideView.setHightLightAreas(mAreas);
 
         mTipView = new LinearLayout(mActivity);
-        mTipView.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+        mTipView.setGravity(Gravity.CENTER_HORIZONTAL);
+        mTipView.setLayoutParams(new RelativeLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         mTipView.setOrientation(LinearLayout.VERTICAL);
 
         if (mIndicators != null) {
@@ -100,8 +95,11 @@ public class EasyGuide {
         }
 
         if (mMessages != null) {
+            int padding = dip2px(mActivity, 5);
             for (Message message : mMessages) {
                 TextView tvMsg = new TextView(mActivity);
+                tvMsg.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+                tvMsg.setPadding(padding, padding, padding, padding);
                 tvMsg.setGravity(Gravity.CENTER);
                 tvMsg.setText(message.message);
                 tvMsg.setTextColor(Color.WHITE);
@@ -134,16 +132,70 @@ public class EasyGuide {
             mTipView.addView(tvConfirm);
         }
 
-        addView(mTipView, Constants.CENTER, Constants.CENTER, null);
+        addView(mTipView, Constants.CENTER, Constants.CENTER, new RelativeLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
 
         mParentView.addView(mGuideView, new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+
+        if (dismissAnyWhere) {
+            mGuideView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    dismiss();
+                    return false;
+                }
+            });
+        }
+
+        if (listener != null) {
+            listener.onShow();
+        }
     }
 
+    /**
+     * 取消引导提示
+     */
     public void dismiss() {
-        mGuideView.recyclerVitmap();
+        mGuideView.recyclerBitmap();
         if (mParentView.indexOfChild(mGuideView) > 0) {
             mParentView.removeView(mGuideView);
+
+            if (listener != null) {
+                listener.onDismiss();
+            }
         }
+    }
+
+    /**
+     * 添加任意 View 到引导提示的布局上
+     *
+     * @param view
+     * @param offsetX X轴偏移，正数表示从布局的左侧往右偏移量，负数表示从布局的右侧往左偏移量。{@link Constants#CENTER}表示居中
+     * @param offsetY Y轴偏移，正数表示从上往下，负数表示从下往上。{@link Constants#CENTER}表示居中
+     * @param params  参数
+     */
+    private void addView(View view, int offsetX, int offsetY, RelativeLayout.LayoutParams params) {
+        if (params == null)
+            params = new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+
+        if (offsetX == Constants.CENTER) {
+            params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+        } else if (offsetX < 0) {
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+            params.rightMargin = -offsetX;
+        } else {
+            params.leftMargin = offsetX;
+        }
+
+        if (offsetY == Constants.CENTER) {
+            params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+        } else if (offsetY < 0) {
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+            params.bottomMargin = -offsetY;
+        } else {
+            params.topMargin = offsetY;
+        }
+
+        mGuideView.addView(view, params);
     }
 
     public boolean isShowing() {
@@ -155,15 +207,24 @@ public class EasyGuide {
         Activity activity;
 
         List<HighlightArea> areas = new ArrayList<>();
-        List<TipsView> indicators = new ArrayList<>();
+        List<TipsView> views = new ArrayList<>();
         List<Message> messages = new ArrayList<>();
 
         Confirm confirm;
+
+        boolean dismissAnyWhere = true;
 
         public Builder(Activity activity) {
             this.activity = activity;
         }
 
+        /**
+         * 添加高亮区域
+         *
+         * @param view
+         * @param shape 高亮区域形状
+         * @return
+         */
         public Builder addHightArea(View view, @HShape int shape) {
             HighlightArea area = new HighlightArea(view, shape);
             areas.add(area);
@@ -175,40 +236,77 @@ public class EasyGuide {
             return this;
         }
 
+        /**
+         * 添加箭头指示的图片资源
+         *
+         * @param resId
+         * @param offX  X轴偏移 正数表示从布局的左侧往右偏移量，负数表示从布局的右侧往左偏移量。{@link Constants#CENTER}表示居中
+         * @param offY  Y轴偏移 正数表示从布局的上侧往下偏移量，负数表示从布局的下侧往上偏移量。{@link Constants#CENTER}表示居中
+         * @return
+         */
         public Builder addIndicator(int resId, int offX, int offY) {
             ImageView ivIndicator = new ImageView(activity);
             ivIndicator.setImageResource(resId);
-            indicators.add(new TipsView(ivIndicator, offX, offY));
+            views.add(new TipsView(ivIndicator, offX, offY));
             return this;
         }
 
         public Builder addView(View view, int offX, int offY) {
-            indicators.add(new TipsView(view, offX, offY));
+            views.add(new TipsView(view, offX, offY));
             return this;
         }
 
+        /**
+         * 添加任意的View
+         *
+         * @param view
+         * @param offX   X轴偏移 正数表示从布局的左侧往右偏移量，负数表示从布局的右侧往左偏移量。{@link Constants#CENTER}表示居中
+         * @param offY   Y轴偏移 正数表示从布局的上侧往下偏移量，负数表示从布局的下侧往上偏移量。{@link Constants#CENTER}表示居中
+         * @param params 参数
+         * @return
+         */
         public Builder addView(View view, int offX, int offY, RelativeLayout.LayoutParams params) {
-            indicators.add(new TipsView(view, offX, offY, params));
+            views.add(new TipsView(view, offX, offY, params));
             return this;
         }
 
+        /**
+         * 添加提示信息，默认居中显示
+         *
+         * @param message
+         * @param textSize
+         * @return
+         */
         public Builder addMessage(String message, int textSize) {
             messages.add(new Message(message, textSize));
             return this;
         }
 
+        /**
+         * 添加确定按钮，默认居中显示在提示信息下方
+         *
+         * @param btnText
+         * @param textSize
+         * @return
+         */
         public Builder setPositiveButton(String btnText, int textSize) {
             this.confirm = new Confirm(btnText, textSize);
             return this;
         }
 
-        public Builder setPositiveButton(String btnText, int offsetY, int textSize) {
-            this.confirm = new Confirm(btnText, offsetY, textSize);
+        /**
+         * 是否点击任意区域消失。默认true
+         *
+         * @param dismissAnyWhere
+         * @return
+         */
+        public Builder dismissAnyWhere(boolean dismissAnyWhere) {
+            this.dismissAnyWhere = dismissAnyWhere;
             return this;
         }
 
         public EasyGuide build() {
-            EasyGuide guide = new EasyGuide(activity, areas, indicators, messages, confirm);
+            EasyGuide guide = new EasyGuide(activity, areas, views, messages, confirm, dismissAnyWhere);
             return guide;
         }
     }

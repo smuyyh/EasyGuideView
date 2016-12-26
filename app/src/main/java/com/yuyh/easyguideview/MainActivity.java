@@ -40,10 +40,14 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.common_toolbar);
 
         setSupportActionBar(toolbar);
-
     }
 
-    public void show(View view) {
+    /**
+     * 显示自定义提示布局
+     *
+     * @param view
+     */
+    public void btnShow(View view) {
         int[] loc = new int[2];
         view.getLocationOnScreen(loc);
 
@@ -53,10 +57,9 @@ public class MainActivity extends AppCompatActivity {
             easyGuide.dismiss();
 
         easyGuide = new EasyGuide.Builder(MainActivity.this)
+                // 增加View高亮区域，可同时显示多个
                 .addHightArea(view, HShape.RECTANGLE)
-                //.addIndicator(R.drawable.left_bottom, 100, 100)
-                //.addMessage("哈哈", 14)
-                //.setPositiveButton("朕知道了", Constants.INVILID_VALUE, 14)
+                // 复杂的提示布局，建议通过此方法，较容易控制
                 .addView(tipsView, 0, loc[1] + view.getHeight(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
                 .build();
 
@@ -80,10 +83,28 @@ public class MainActivity extends AppCompatActivity {
         return view;
     }
 
+    /**
+     * 各个组件分别添加
+     *
+     * @param view
+     */
+    public void menuShow(View view) {
+        int[] loc = new int[2];
+        view.getLocationOnScreen(loc);
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
+        View tipsView = createTipsView();
+
+        if (easyGuide != null && easyGuide.isShowing())
+            easyGuide.dismiss();
+
+        easyGuide = new EasyGuide.Builder(MainActivity.this)
+                .addHightArea(view, HShape.CIRCLE)
+                .addIndicator(R.drawable.right_top, loc[0], loc[1] + view.getHeight())
+                .addMessage("点击菜单显示", 14)
+                .setPositiveButton("朕知道了~", 15)
+                .build();
+
+        easyGuide.show();
     }
 
     @Override
@@ -98,9 +119,17 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu:
                 menuView = (TextView) findViewById(R.id.menu);
-                show(menuView);
+                menuShow(menuView);
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (easyGuide != null && easyGuide.isShowing())
+            easyGuide.dismiss();
     }
 }
