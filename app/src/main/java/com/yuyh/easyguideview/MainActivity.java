@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 各个组件分别添加
+     * 各个组件分别添加。此方式只能显示简单的提示信息与按钮，建议通过addView形式
      *
      * @param view
      */
@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 .addIndicator(R.drawable.right_top, loc[0], loc[1] + view.getHeight())
                 .addMessage("点击菜单显示", 14)
                 .setPositiveButton("朕知道了~", 15)
+                .dismissAnyWhere(true)
                 .build();
 
         easyGuide.show();
