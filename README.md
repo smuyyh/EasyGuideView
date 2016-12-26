@@ -1,6 +1,11 @@
 # EasyGuideView
 Android app新手引导提示，简单易用
 
+## 效果
+
+<img src="https://github.com/smuyyh/EasyGuideView/blob/master/screenshot/1.png?raw=true" width=270/>
+<img src="https://github.com/smuyyh/EasyGuideView/blob/master/screenshot/2.png?raw=true" width=270/>
+
 ## 添加依赖
 
 ```
