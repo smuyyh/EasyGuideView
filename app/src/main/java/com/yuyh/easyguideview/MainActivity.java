@@ -6,6 +6,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.common_toolbar);
 
         setSupportActionBar(toolbar);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        //btnShow(findViewById(R.id.menu_button));
     }
 
     /**
@@ -101,7 +108,13 @@ public class MainActivity extends AppCompatActivity {
                 .addHightArea(view, HShape.CIRCLE)
                 .addIndicator(R.drawable.right_top, loc[0], loc[1] + view.getHeight())
                 .addMessage("点击菜单显示", 14)
-                .setPositiveButton("朕知道了~", 15)
+                .setPositiveButton("朕知道了~", 15, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        easyGuide.dismiss();
+                        Log.i("TAG", "dismiss");
+                    }
+                })
                 .dismissAnyWhere(true)
                 .build();
 

@@ -1,6 +1,6 @@
 package com.yuyh.library.bean;
 
-import com.yuyh.library.constant.Constants;
+import android.view.View;
 
 /**
  * @author yuyh.
@@ -12,6 +12,8 @@ public class Confirm {
 
     public int textSize = -1;
 
+    public View.OnClickListener listener;
+
     public Confirm(String text) {
         this.text = text;
     }
@@ -19,5 +21,11 @@ public class Confirm {
     public Confirm(String text, int textSize) {
         this.text = text;
         this.textSize = textSize;
+    }
+
+    public Confirm(String text, int textSize, View.OnClickListener listener) {
+        this.text = text;
+        this.textSize = textSize;
+        this.listener = listener;
     }
 }

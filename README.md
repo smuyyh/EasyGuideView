@@ -9,12 +9,14 @@ Android app新手引导高亮提示，简单易用
 ## 添加依赖
 
 ```
-compile 'com.yuyh.easyguideview:library:1.1.1'
+compile 'com.yuyh.easyguideview:library:1.2.0'
 ```
 
 ## 基本使用
 
 ```java
+
+// 须在View绘制完成之后调用，否则可能无法准确显示
 public void show(){
     EasyGuide easyGuide = new EasyGuide.Builder(MainActivity.this)
             // 增加View高亮区域，可同时显示多个

@@ -122,7 +122,8 @@ public class EasyGuide {
             int lr = dip2px(mActivity, 8);
             int tb = dip2px(mActivity, 5);
             tvConfirm.setPadding(lr, tb, lr, tb);
-            tvConfirm.setOnClickListener(new View.OnClickListener() {
+            tvConfirm.setOnClickListener(mConfirm.listener != null ?
+                    mConfirm.listener : new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dismiss();
@@ -291,6 +292,11 @@ public class EasyGuide {
          */
         public Builder setPositiveButton(String btnText, int textSize) {
             this.confirm = new Confirm(btnText, textSize);
+            return this;
+        }
+
+        public Builder setPositiveButton(String btnText, int textSize, View.OnClickListener listener) {
+            this.confirm = new Confirm(btnText, textSize, listener);
             return this;
         }
 
