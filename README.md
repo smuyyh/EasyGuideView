@@ -30,7 +30,7 @@ public void show(){
             // 设置提示信息，默认居中。若需调整，可采用addView形式
             .addMessage("点击菜单显示", 14)
             // 设置确定按钮，默认居中显示在Message下面
-            .setPositiveButton("朕知道了~", 15)
+            .setPositiveButton("朕知道了~", 15, onClickListener)
             // 是否点击任意区域消失，默认true
             .dismissAnyWhere(true)
             .build();
