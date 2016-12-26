@@ -9,7 +9,7 @@ Android app新手引导高亮提示，简单易用
 ## 添加依赖
 
 ```
-compile 'com.yuyh.easyguideview:library:1.2.0'
+compile 'com.yuyh.easyguideview:library:1.2.1'
 ```
 
 ## 基本使用
