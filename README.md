@@ -1,5 +1,5 @@
 # EasyGuideView
-Android app新手引导提示，简单易用
+Android app新手引导高亮提示，简单易用
 
 ## 效果
 
@@ -9,12 +9,12 @@ Android app新手引导提示，简单易用
 ## 添加依赖
 
 ```
-compile 'com.yuyh.easyguideview:library:1.1.0'
+compile 'com.yuyh.easyguideview:library:1.1.1'
 ```
 
 ## 基本使用
 
-```
+```java
 public void show(){
     EasyGuide easyGuide = new EasyGuide.Builder(MainActivity.this)
             // 增加View高亮区域，可同时显示多个
