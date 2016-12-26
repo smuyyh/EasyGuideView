@@ -28,11 +28,12 @@ public class EasyGuideView extends RelativeLayout {
     private int mScreenWidth;
     private int mScreenHeight;
 
-    private int mBgColor = 0xb2000000;
+    private int mBgColor;
     private float mStrokeWidth;
     private Paint mPaint;
     private Bitmap mBitmap;
     private RectF mBitmapRect;
+    private RectF mOutRect;
     private Canvas mCanvas;
     private List<HighlightArea> mHighlightList;
 
@@ -64,6 +65,8 @@ public class EasyGuideView extends RelativeLayout {
 
         mBitmapRect = new RectF();
         mode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
+
+        mBgColor = 0xaa000000;
 
         setWillNotDraw(false);
         setClickable(true);
@@ -108,6 +111,13 @@ public class EasyGuideView extends RelativeLayout {
             }
         }
 
+        // 外部阴影绘制基准
+        mOutRect = new RectF();
+        mOutRect.left = mBitmapRect.left - mStrokeWidth / 2;
+        mOutRect.top = mBitmapRect.top - mStrokeWidth / 2;
+        mOutRect.right = mBitmapRect.right + mStrokeWidth / 2;
+        mOutRect.bottom = mBitmapRect.bottom + mStrokeWidth / 2;
+
         initCanvas();
     }
 
@@ -115,9 +125,6 @@ public class EasyGuideView extends RelativeLayout {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (mHighlightList != null && mHighlightList.size() > 0) {
-
-
-
             mPaint.setXfermode(mode);
             mPaint.setStyle(Paint.Style.FILL);
             for (HighlightArea area : mHighlightList) {
@@ -126,7 +133,7 @@ public class EasyGuideView extends RelativeLayout {
                 switch (area.mShape) {
                     case HShape.CIRCLE:
                         mCanvas.drawCircle(rectF.centerX(), rectF.centerY(),
-                                Math.min(area.mHightlightView.getWidth(), area.mHightlightView.getHeight())/2,
+                                Math.min(area.mHightlightView.getWidth(), area.mHightlightView.getHeight()) / 2,
                                 mPaint);
                         break;
                     case HShape.RECTANGLE:
@@ -138,21 +145,11 @@ public class EasyGuideView extends RelativeLayout {
                 }
             }
             canvas.drawBitmap(mBitmap, mBitmapRect.left, mBitmapRect.top, null);
-            //绘制剩余空间的矩形
             mPaint.setXfermode(null);
             mPaint.setStyle(Paint.Style.STROKE);
             mPaint.setStrokeWidth(mStrokeWidth + 0.1f);
-            canvas.drawRect(fillRect(mBitmapRect), mPaint);
+            canvas.drawRect(mOutRect, mPaint);
         }
-    }
-
-    private RectF fillRect(RectF rectF) {
-        RectF fillRect = new RectF();
-        fillRect.left = rectF.left - mStrokeWidth / 2;
-        fillRect.top = rectF.top - mStrokeWidth / 2;
-        fillRect.right = rectF.right + mStrokeWidth / 2;
-        fillRect.bottom = rectF.bottom + mStrokeWidth / 2;
-        return fillRect;
     }
 
     public void recyclerBitmap() {
