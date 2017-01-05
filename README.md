@@ -59,7 +59,7 @@ private View createTipsView() {
 
 
 // 如何判断绘制完成？
-// 等待高亮View加载完成之后再调用显示引导层，例如对于toolbar高亮来说：
+// 等待高亮View加载完成之后再调用显示引导层，例如对于hightLightView高亮来说：
 hightLightView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
     @Override
     public void onGlobalLayout() {// 加载完成后回调
