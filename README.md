@@ -57,8 +57,12 @@ private View createTipsView() {
     return view;
 }
 
+```
 
-// 如何判断绘制完成？
+如何判断绘制完成？可重写activity的```void onWindowFocusChanged(boolean hasFocus)```方法，建议使用以下方式：
+
+```java
+
 // 等待高亮View加载完成之后再调用显示引导层，例如对于hightLightView高亮来说：
 hightLightView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
     @Override
