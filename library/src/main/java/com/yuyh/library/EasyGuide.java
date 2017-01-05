@@ -31,6 +31,8 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 /**
  * 新手引导
  *
+ * https://github.com/smuyyh/EasyGuideView
+ *
  * @author yuyh.
  * @date 2016/12/24.
  */
