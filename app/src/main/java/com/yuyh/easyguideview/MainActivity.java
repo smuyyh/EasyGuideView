@@ -1,10 +1,9 @@
 package com.yuyh.easyguideview;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,6 +41,22 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.common_toolbar);
 
         setSupportActionBar(toolbar);
+
+        // 等待高亮View加载完成之后再调用显示引导层，例如对于toolbar高亮来说：
+        toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                // 加载完成后回调
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+                    toolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    toolbar.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+
+                // TODO 显示高亮布局！
+
+            }
+        });
     }
 
     @Override

@@ -57,6 +57,25 @@ private View createTipsView() {
     return view;
 }
 
+
+// 如何判断绘制完成？
+// 等待高亮View加载完成之后再调用显示引导层，例如对于toolbar高亮来说：
+hightLightView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+    @Override
+    public void onGlobalLayout() {// 加载完成后回调
+
+        // 务必取消监听，否则会多次调用
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+            hightLightView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+        } else {
+            hightLightView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+        }
+
+        // TODO 显示高亮布局！
+
+    }
+});
+
 ```
 
 ## LICENSES
