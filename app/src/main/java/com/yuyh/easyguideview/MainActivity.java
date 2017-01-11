@@ -15,9 +15,11 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yuyh.library.EasyGuide;
 import com.yuyh.library.support.HShape;
+import com.yuyh.library.support.OnStateChangedListener;
 
 /**
  * @author yuyh.
@@ -84,7 +86,26 @@ public class MainActivity extends AppCompatActivity {
                 .addHightArea(view, HShape.RECTANGLE)
                 // 复杂的提示布局，建议通过此方法，较容易控制
                 .addView(tipsView, 0, loc[1] + view.getHeight(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+                // 若点击作用在高亮区域，是否执行高亮区域的点击事件
+                .performViewClick(true)
                 .build();
+
+        easyGuide.setOnStateChangedListener(new OnStateChangedListener() {
+            @Override
+            public void onShow() {
+
+            }
+
+            @Override
+            public void onDismiss() {
+
+            }
+
+            @Override
+            public void onHeightlightViewClick(View view) {
+                Log.i("TAG", "点击了view：" + view.getId());
+            }
+        });
 
         easyGuide.show();
     }

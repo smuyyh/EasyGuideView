@@ -25,12 +25,13 @@ import com.yuyh.library.view.EasyGuideView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.MotionEvent.ACTION_UP;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
  * 新手引导
- *
+ * <p>
  * https://github.com/smuyyh/EasyGuideView
  *
  * @author yuyh.
@@ -48,21 +49,23 @@ public class EasyGuide {
     private List<Message> mMessages = new ArrayList<>();
     private Confirm mConfirm;
     private boolean dismissAnyWhere;
+    private boolean performViewClick;
 
     private OnStateChangedListener listener;
 
     public EasyGuide(Activity activity) {
-        this(activity, null, null, null, null, true);
+        this(activity, null, null, null, null, true, false);
     }
 
     public EasyGuide(Activity activity, List<HighlightArea> areas, List<TipsView> indicators,
-                     List<Message> messages, Confirm confirm, boolean dismissAnyWhere) {
+                     List<Message> messages, Confirm confirm, boolean dismissAnyWhere, boolean performViewClick) {
         this.mActivity = activity;
         this.mAreas = areas;
         this.mIndicators = indicators;
         this.mMessages = messages;
         this.mConfirm = confirm;
         this.dismissAnyWhere = dismissAnyWhere;
+        this.performViewClick = performViewClick;
 
         mParentView = (FrameLayout) mActivity.getWindow().getDecorView();
 
@@ -139,12 +142,42 @@ public class EasyGuide {
 
         mParentView.addView(mGuideView, new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
 
-        if (dismissAnyWhere) {
+        if (dismissAnyWhere || performViewClick) {
             mGuideView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    dismiss();
-                    return false;
+                    switch (event.getAction()) {
+                        case ACTION_UP:
+                            if (mAreas.size() > 0) {
+
+                                for (HighlightArea area : mAreas) {
+                                    final View view = area.mHightlightView;
+
+                                    // 如果点击事件作用在该View上
+                                    if (view != null && inRangeOfView(view, event)) {
+
+                                        dismiss();
+
+                                        if (listener != null) {
+                                            listener.onHeightlightViewClick(view);
+                                        }
+
+                                        if (performViewClick) {
+                                            view.performClick();
+                                        }
+                                    } else if (dismissAnyWhere) {
+                                        dismiss();
+                                    }
+                                }
+                                return false;
+                            } else {
+                                dismiss();
+                                return false;
+                            }
+                        default:
+                            break;
+                    }
+                    return true;
                 }
             });
         }
@@ -205,6 +238,17 @@ public class EasyGuide {
         return mParentView.indexOfChild(mGuideView) > 0;
     }
 
+    public boolean inRangeOfView(View view, MotionEvent ev) {
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        int x = location[0];
+        int y = location[1];
+        if (ev.getX() < x || ev.getX() > (x + view.getWidth()) || ev.getY() < y || ev.getY() > (y + view.getHeight())) {
+            return false;
+        }
+        return true;
+    }
+
     public static class Builder {
 
         Activity activity;
@@ -216,6 +260,7 @@ public class EasyGuide {
         Confirm confirm;
 
         boolean dismissAnyWhere = true;
+        boolean performViewClick;
 
         public Builder(Activity activity) {
             this.activity = activity;
@@ -313,8 +358,19 @@ public class EasyGuide {
             return this;
         }
 
+        /**
+         * 若点击作用在高亮区域，是否执行高亮区域的点击事件
+         *
+         * @param performViewClick
+         * @return
+         */
+        public Builder performViewClick(boolean performViewClick) {
+            this.performViewClick = performViewClick;
+            return this;
+        }
+
         public EasyGuide build() {
-            EasyGuide guide = new EasyGuide(activity, areas, views, messages, confirm, dismissAnyWhere);
+            EasyGuide guide = new EasyGuide(activity, areas, views, messages, confirm, dismissAnyWhere, performViewClick);
             return guide;
         }
     }

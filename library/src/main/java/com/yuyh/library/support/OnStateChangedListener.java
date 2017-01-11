@@ -1,6 +1,6 @@
 package com.yuyh.library.support;
 
-import android.app.SearchManager;
+import android.view.View;
 
 /**
  * @author yuyh.
@@ -11,4 +11,6 @@ public interface OnStateChangedListener {
     void onShow();
 
     void onDismiss();
+
+    void onHeightlightViewClick(View view);
 }

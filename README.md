@@ -35,6 +35,8 @@ public void show(){
             .setPositiveButton("朕知道了~", 15, onClickListener)
             // 是否点击任意区域消失，默认true
             .dismissAnyWhere(true)
+            // 若点击作用在高亮区域，是否执行高亮区域的点击事件，默认false
+            .performViewClick(true)
             .build();
 
     easyGuide.show();
@@ -81,6 +83,29 @@ hightLightView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObser
 });
 
 ```
+
+新手引导层状态改变监听
+
+```java
+easyGuide.setOnStateChangedListener(new OnStateChangedListener() {
+    @Override
+    public void onShow() {
+
+    }
+
+    @Override
+    public void onDismiss() {
+
+    }
+
+    @Override
+    public void onHeightlightViewClick(View view) {
+        Log.i("TAG", "点击了view：" + view.getId());
+    }
+});
+```
+
+
 
 ## LICENSES
 
