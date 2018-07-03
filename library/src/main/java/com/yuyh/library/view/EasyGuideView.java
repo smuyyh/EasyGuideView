@@ -123,8 +123,6 @@ public class EasyGuideView extends RelativeLayout {
         super.onDraw(canvas);
         if (mHighlightList != null && mHighlightList.size() > 0) {
 
-
-
             mPaint.setXfermode(mode);
             mPaint.setStyle(Paint.Style.FILL);
             for (HighlightArea area : mHighlightList) {
@@ -133,7 +131,7 @@ public class EasyGuideView extends RelativeLayout {
                 switch (area.mShape) {
                     case HShape.CIRCLE:
                         mCanvas.drawCircle(rectF.centerX(), rectF.centerY(),
-                                Math.min(area.mHightlightView.getWidth(), area.mHightlightView.getHeight())/2,
+                                Math.min(area.mHightlightView.getWidth(), area.mHightlightView.getHeight()) / 2,
                                 mPaint);
                         break;
                     case HShape.RECTANGLE:
@@ -158,5 +156,17 @@ public class EasyGuideView extends RelativeLayout {
             mBitmap.recycle();
             mBitmap = null;
         }
+    }
+
+    @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        recyclerBitmap();
     }
 }

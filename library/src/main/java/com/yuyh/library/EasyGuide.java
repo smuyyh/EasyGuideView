@@ -1,5 +1,6 @@
 package com.yuyh.library;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
@@ -84,7 +85,6 @@ public class EasyGuide {
      * 显示引导提示
      */
     public void show() {
-
         mGuideView = new EasyGuideView(mActivity);
         mGuideView.setHightLightAreas(mAreas);
 
@@ -143,7 +143,9 @@ public class EasyGuide {
         mParentView.addView(mGuideView, new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
 
         if (dismissAnyWhere || performViewClick) {
+            mGuideView.setClickable(true);
             mGuideView.setOnTouchListener(new View.OnTouchListener() {
+
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     switch (event.getAction()) {
@@ -169,7 +171,7 @@ public class EasyGuide {
                                         dismiss();
                                     }
                                 }
-                                return false;
+                                return true;
                             } else {
                                 dismiss();
                                 return false;
@@ -370,8 +372,7 @@ public class EasyGuide {
         }
 
         public EasyGuide build() {
-            EasyGuide guide = new EasyGuide(activity, areas, views, messages, confirm, dismissAnyWhere, performViewClick);
-            return guide;
+            return new EasyGuide(activity, areas, views, messages, confirm, dismissAnyWhere, performViewClick);
         }
     }
 

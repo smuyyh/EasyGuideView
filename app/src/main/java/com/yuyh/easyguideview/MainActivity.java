@@ -86,8 +86,9 @@ public class MainActivity extends AppCompatActivity {
                 .addHightArea(view, HShape.RECTANGLE)
                 // 复杂的提示布局，建议通过此方法，较容易控制
                 .addView(tipsView, 0, loc[1] + view.getHeight(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-                // 若点击作用在高亮区域，是否执行高亮区域的点击事件
-                .performViewClick(true)
+                // 若点击作用在高亮区域，是否执行高亮区域的点击事件，这里没设置，否则多次弹出
+                // .performViewClick(true)
+                .dismissAnyWhere(false)
                 .build();
 
         easyGuide.setOnStateChangedListener(new OnStateChangedListener() {
@@ -152,7 +153,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.i("TAG", "dismiss");
                     }
                 })
-                .dismissAnyWhere(true)
+                .performViewClick(true)
+                .dismissAnyWhere(false)
                 .build();
 
         easyGuide.show();
